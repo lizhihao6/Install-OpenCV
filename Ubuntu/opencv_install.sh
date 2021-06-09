@@ -48,5 +48,7 @@ make install
 sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
 ldconfig
 cp /usr/local/lib/pkgconfig/opencv4.pc /usr/lib/pkgconfig/opencv.pc
+cp /usr/local/lib/pkgconfig/opencv4.pc /usr/lib/pkgconfig/opencv4.pc
+cp /usr/local/lib/pkgconfig/opencv4.pc /usr/local/lib/pkgconfig/opencv.pc
 echo "OpenCV" $version "ready to be used"
 
