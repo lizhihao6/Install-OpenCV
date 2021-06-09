@@ -5,6 +5,9 @@
 # version - the version of OpenCV to be installed
 # downloadfile - the name of the OpenCV download file
 # dldir - the download directory (optional, if not specified creates an OpenCV directory in the working dir)
+version="4.5.2"
+downloadfile="4.5.2.zip"
+
 if [[ -z "$version" ]]; then
     echo "Please define version before calling `basename $0` or use a wrapper like opencv_latest.sh"
     exit 1
@@ -16,10 +19,6 @@ fi
 if [[ -z "$dldir" ]]; then
     dldir=OpenCV
 fi
-if ! sudo true; then
-    echo "You must have root privileges to run this script."
-    exit 1
-fi
 set -e
 
 echo "--- Installing OpenCV" $version
@@ -30,7 +29,8 @@ source dependencies.sh
 echo "--- Downloading OpenCV" $version
 mkdir -p $dldir
 cd $dldir
-wget -c -O $downloadfile http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/$version/$downloadfile/download
+#wget -c -O $downloadfile http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/$version/$downloadfile/download
+wget -c -O $downloadfile https://nchc.dl.sourceforge.net/project/opencvlibrary/4.5.2/OpenCV%204.5.2.zip
 
 echo "--- Installing OpenCV" $version
 echo $downloadfile | grep ".zip"
@@ -42,9 +42,11 @@ fi
 cd opencv-$version
 mkdir build
 cd build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON ..
-make -j 4
-sudo make install
-sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
-sudo ldconfig
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_GENERATE_PKGCONFIG=ON -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON ..
+make -j 16
+make install
+sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+ldconfig
+cp /usr/local/lib/pkgconfig/opencv4.pc /usr/lib/pkgconfig/opencv.pc
 echo "OpenCV" $version "ready to be used"
+
